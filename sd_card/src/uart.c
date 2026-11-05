@@ -16,6 +16,7 @@ void uart_rx_handler();
 
 /*******************************************************************/
 
+//code from lab7
 void init_uart() {
     gpio_set_function(0, UART_FUNCSEL_NUM(uart0, 0));
     gpio_set_function(1, UART_FUNCSEL_NUM(uart0, 1));
