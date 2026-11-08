@@ -33,7 +33,7 @@ void disable_sdcard() {
     uint8_t gen_clk = 0xFF;
 
     gpio_put(SD_CS, true);
-    spi_write_blocking(spi0, &gen_clk, 8);
+    spi_write_blocking(spi0, &gen_clk, 1);
 
     //make MOSI sio and set high
     gpio_set_function(SD_MOSI, GPIO_FUNC_SIO);
@@ -42,9 +42,8 @@ void disable_sdcard() {
 }
 
 void enable_sdcard() {
-    // fill in.
-    gpio_put(SD_CS, false);
     gpio_set_function(SD_MOSI, GPIO_FUNC_SPI);
+    gpio_put(SD_CS, false);
 }
 
 void sdcard_io_high_speed() {
