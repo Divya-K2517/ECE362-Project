@@ -32,11 +32,21 @@ void spi_clear_rxfifo(spi_inst_t *s) {
 // Write a single byte to the SD card interface and read a value
 // back.  Wait until the read/write exchange has completed before
 // reading the value from the SPI_DR and returning that value.
+//debug
 uint8_t sdcard_write(uint8_t b)
 {
     spi_write_blocking(sd, &b, 1);
     return (uint8_t)spi_get_hw(sd)->dr;
 }
+
+// uint8_t sdcard_write(uint8_t b)
+// {
+//     uint8_t received = 0xFF;
+
+//     spi_write_read_blocking(sd, &b, &received, 1);
+
+//     return received;
+// }
 
 // uint8_t sdcard_read(void)
 // {
@@ -156,6 +166,11 @@ DSTATUS disk_initialize (
     spi_clear_rxfifo(sd);
     enable_sdcard();
     value = sdcard_cmd(0, 0x00000000, 0x95); // Go to idle state
+    //DEBUG
+    // if (count <= 3 || count % 100 == 0) {
+    // printf("CMD0 attempt %d: response=0x%02X\r\n",
+    //     count, (unsigned)value);
+    // }
     if (value != 1)
         goto restart;
     disable_sdcard();
@@ -165,12 +180,41 @@ DSTATUS disk_initialize (
     value = sdcard_r3();
     disable_sdcard();
 
+    //DEBUG
     do {
         enable_sdcard();
         value = sdcard_cmd(55, 0x40000000, 0x01); // Start initialization
         value = sdcard_cmd(41, 0x40000000, 0x01); // Start initialization
         disable_sdcard();
     } while(value != 0);
+
+    // printf("Starting ACMD41...\r\n");
+
+    // absolute_time_t deadline = make_timeout_time_ms(2000);
+
+    // do {
+    //     enable_sdcard();
+
+    //     int cmd55 = sdcard_cmd(55, 0x00000000, 0x01);
+    //     value = sdcard_cmd(41, 0x40000000, 0x01);
+
+    //     disable_sdcard();
+
+    //     if (value == 0) {
+    //         printf("ACMD41 ready\r\n");
+    //         break;
+    //     }
+
+    //     if (time_reached(deadline)) {
+    //         printf("Init timeout: CMD55=0x%02X, ACMD41=0x%02X\r\n",
+    //             (unsigned)cmd55, (unsigned)value);
+
+    //         sdcard_status = STA_NOINIT;
+    //         return sdcard_status;
+    //     }
+
+    //     sleep_ms(10);
+    // } while (value != 0);
 
     enable_sdcard();
     value = sdcard_cmd(58, 0x00000000, 0x01); // get OCR [expect 0x00]

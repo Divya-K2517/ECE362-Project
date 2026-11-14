@@ -323,6 +323,17 @@ void mount(int argc, char *argv[])
     int res = f_mount(fs, "", 1);
     if (res != FR_OK)
         print_error(res, "Error occurred while mounting");
+
+    // printf("Entering f_mount...\r\n");
+
+    // FRESULT res = f_mount(fs, "", 1);
+
+    // printf("f_mount returned: %d\r\n", (int)res);
+
+    // if (res == FR_OK)
+    //     printf("Mount successful\r\n");
+    // else
+    //     print_error(res, "Mount failed");
 }
 
 void pwd(int argc, char *argv[])
